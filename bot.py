@@ -1,25 +1,81 @@
 import telebot
 import time
+import datetime
+from pymongo import MongoClient
+import config
+
+MONGODB_URI = "mongodb://osdc:osdc0001@ds231374.mlab.com:31374/jiitosdc"
+client = MongoClient(config.MONGODB_URI, connectTimeoutMS=30000)
+
 
 bot_token='633214880:AAFT1IE1JJzPSZUSRBpOWHOQiOJmhC-kCZ0'
 
-bot = telebot.TeleBot(token=bot_token)
+bot = telebot.TeleBot(token=config.bot_token)
 
 
-@bot.message_handler(commands=['start'])
+
+def getRECORD(user_id):
+    records = user_records.find_one({"user_id":user_id})
+    return records
+
+def pushRECORD(record):
+    user_records.insert_one(record)
+
+def updateRecord(record, updates):
+    user_records.update_one({'_id': record['_id']},{
+                              '$set': updates
+                              }, upsert=False)
+
+
+@bot.message_handler(commands=['start']) # welcome message handler
 def send_welcome(message):
-	bot.send_message(message.chat.id, 'Welcome!')
+    bot.reply_to(message, 'Welcome! Use /addevent to Add an upcoming event and use /top10 to add an article link.')
 
-@bot.message_handler(commands=['add'])
-def add(message):
-	bot.send_message(message.chat.id,'Title?')
+@bot.message_handler(commands=['help']) # help message handler
+def send_welcome(message):
+    bot.reply_to(message, 'This bot is for only OSDC admins.\nUse /addevent to Add an upcoming event and use /top10 to add an article link.')
+
+@bot.message_handler(commands=['addevent']) # welcome message handler
+def send_welcome(message):
+    bot.reply_to(message,'Please send the event details in following format.\n\naddevent\nEvent title\nEvent date(dd/mm/yyyy)\nEvent time\nVenue')
+
+@bot.message_handler(commands=['top10']) # welcome message handler
+def send_welcome(message):
+    bot.reply_to(message,'Please send article details in following format\ntop10\nArticle title\nURL')
+
+
+@bot.message_handler(func=lambda msg: msg.text is not None and 'addevent' in msg.text.lower())
+def at_converter(message):
+	admins=['kartikaybhutani']
+	if message.from_user.username in admins:
+		try:
+			texts = message.text.split('\n')
+			title=texts[1]
+			date=texts[2]
+			time=texts[3]
+			venue=texts[4]
+			format_str = '%d/%m/%Y' # The format
+			date = datetime.datetime.strptime(date, format_str)
+			bot.reply_to(message, date)
+		
+
+			db = client.get_database("jiitosdc")
+			meetings=db.meetings
 
 
 
+
+
+		except Exception as e:
+			bot.reply_to(message, 'Some error occured. Report to @kartikaybhutani')
+			print(e)
+	else:
+		bot.reply_to(message, 'Sorry, You don\'t have admin rights')
 
 while True:
-	try:
-		bot.polling()
-	except Exception as e:
-		print(e)
-		time.sleep(15)
+    try:
+        bot.polling(none_stop=True)
+        # ConnectionError and ReadTimeout because of possible timout of the requests library
+        # maybe there are others, therefore Exception
+    except Exception:
+        time.sleep(15)
