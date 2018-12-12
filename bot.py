@@ -21,10 +21,6 @@ def getRECORD(dbname):
 def pushRECORD(dbname, record):
     dbname.insert_one(record)
 
-def updateRecord(record, updates):
-    user_records.update_one({'_id': record['_id']},{
-                              '$set': updates
-                              }, upsert=False)
 
 
 @bot.message_handler(commands=['start']) # welcome message handler
@@ -46,7 +42,7 @@ def send_welcome(message):
 
 @bot.message_handler(func=lambda msg: msg.text is not None and 'addevent' in msg.text.lower())
 def at_converter(message):
-	admins=['kartikaybhutani']
+	admins=['kartikaybhutani', 'homuncculus', 'ryzokuken','dark_harryM']
 	if message.from_user.username in admins:
 		try:
 			texts = message.text.split('\n')
@@ -65,7 +61,7 @@ def at_converter(message):
 			"venue": venue,
 			}
 			pushRECORD(meetings, rec)
-			bot.reply_to(message, 'Added event details succesfully!')
+			bot.reply_to(message, 'Added event details succesfully! Use \\upcoming to view upcoming events!')
 
 
 
@@ -119,7 +115,7 @@ def at_converter(message):
 			"url": url,
 			}
 			pushRECORD(top10, rec)
-			bot.reply_to(message, 'Added Article details succesfully!')
+			bot.reply_to(message, 'Added Article details succesfully! Use \\top10 to view articles')
 
 
 		except Exception as e:
@@ -136,7 +132,11 @@ def send_welcome(message):
 	temp=[]
 	for document in articles:
 	      temp.append(document)
-	temp=temp[:10]
+	try:
+		temp=temp[:10]
+	except Exception as e:
+		temp=temp
+	
 	# upcoming=[]
 	# for i in range (0,len(temp)):
 	#     date=temp[i]['date']
