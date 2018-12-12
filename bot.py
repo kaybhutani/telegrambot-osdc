@@ -25,7 +25,7 @@ def pushRECORD(dbname, record):
 
 @bot.message_handler(commands=['start']) # welcome message handler
 def send_welcome(message):
-    bot.reply_to(message, 'Welcome! Use /addevent to Add an upcoming event and use /top10 to add an article link.')
+    bot.reply_to(message, 'Welcome! Use /addevent to Add an upcoming event and use /top10 to add an article link.\n Use /upcoming to View upcoming meetups.\n Use /top10 to view top10 articles.')
 
 @bot.message_handler(commands=['help']) # help message handler
 def send_welcome(message):
@@ -61,7 +61,7 @@ def at_converter(message):
 			"venue": venue,
 			}
 			pushRECORD(meetings, rec)
-			bot.reply_to(message, 'Added event details succesfully! Use \\upcoming to view upcoming events!')
+			bot.reply_to(message, 'Added event details succesfully! Use /upcoming to view upcoming events!')
 
 
 
@@ -115,7 +115,7 @@ def at_converter(message):
 			"url": url,
 			}
 			pushRECORD(top10, rec)
-			bot.reply_to(message, 'Added Article details succesfully! Use \\top10 to view articles')
+			bot.reply_to(message, 'Added Article details succesfully! Use /top10 to view articles')
 
 
 		except Exception as e:
