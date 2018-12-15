@@ -5,8 +5,10 @@ from pymongo import MongoClient
 import config
 
 MONGODB_URI = "mongodb://osdc:osdc0001@ds231374.mlab.com:31374/jiitosdc"
-client = MongoClient(config.MONGODB_URI, connectTimeoutMS=30000)
-
+try:
+	client = MongoClient(config.MONGODB_URI, connectTimeoutMS=30000)
+except:
+	print(e)
 
 bot_token='633214880:AAFT1IE1JJzPSZUSRBpOWHOQiOJmhC-kCZ0'
 
@@ -154,12 +156,12 @@ def send_welcome(message):
 
 
 
+bot.polling(none_stop=True)
 
-
-while True:
-    try:
-        bot.polling(none_stop=True)
-        # ConnectionError and ReadTimeout because of possible timout of the requests library
-        # maybe there are others, therefore Exception
-    except Exception:
-        time.sleep(15)
+# while True:
+#     try:
+#         bot.polling(none_stop=True)
+#         # ConnectionError and ReadTimeout because of possible timout of the requests library
+#         # maybe there are others, therefore Exception
+#     except Exception:
+#         time.sleep(15)
