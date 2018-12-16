@@ -3,7 +3,7 @@ import time
 import datetime
 from pymongo import MongoClient
 import config
-
+from profanity import profanity
 
 try:
 	client = MongoClient(config.MONGODB_URI, connectTimeoutMS=30000)
@@ -195,6 +195,10 @@ def at_converter(message):
 			print(e)
 	else:
 		bot.reply_to(message, 'Sorry, You don\'t have admin rights')
+
+@bot.message_handler(func=lambda msg: profanity.contains_profanity(msg.text) )
+def at_converter(message):
+	bot.reply_to(message, "{}\n Please mind your language.".format(profanity.censor(message.text)))
 
 bot.polling(none_stop=True)
 
