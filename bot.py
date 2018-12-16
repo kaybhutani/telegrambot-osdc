@@ -1,4 +1,4 @@
-from telebot import TeleBot
+import telebot
 import time
 import datetime
 from pymongo import MongoClient
