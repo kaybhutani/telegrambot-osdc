@@ -4,13 +4,14 @@ import datetime
 from pymongo import MongoClient
 import config
 
-MONGODB_URI = "mongodb://osdc:osdc0001@ds231374.mlab.com:31374/jiitosdc"
+
 try:
 	client = MongoClient(config.MONGODB_URI, connectTimeoutMS=30000)
+
+
 except:
 	print(e)
 
-bot_token='783770512:AAFAxVSBX2bPxphcltTOLVBmBbAanO-zo_o'
 
 bot = telebot.TeleBot(token=config.bot_token)
 
