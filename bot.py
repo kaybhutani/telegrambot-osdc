@@ -91,10 +91,9 @@ def send_welcome(message):
 
 	    if(datetime_obj > datetime.datetime.now()):
 	        upcoming.append(temp[i])
-	
 	msg=''
 	for i in range(0,len(upcoming)):
-		msg=msg+'{}\n{}\n{}\n{}\n\n'.format(upcoming[i]['title'],upcoming[i]['date'],upcoming[i]['time'],upcoming[i]['venue'])
+		msg=msg+'{}\n{}\n{}\n{}\n\n'.format(upcoming[-(i-1)]['title'],upcoming[-(i-1)]['date'],upcoming[-(i-1)]['time'],upcoming[-(i-1)]['venue'])
 	bot.reply_to(message,msg)
 
 
@@ -139,7 +138,6 @@ def send_welcome(message):
 		temp=temp[:10]
 	except Exception as e:
 		temp=temp
-	temp=temp.reverse()
 	
 	# upcoming=[]
 	# for i in range (0,len(temp)):
@@ -151,7 +149,7 @@ def send_welcome(message):
 	#         upcoming.append(temp[i])
 	msg=''
 	for i in range(0,len(temp)):
-		msg=msg+'{}\n{}\n\n'.format(temp[i]['title'], temp[i]['url'])
+		msg=msg+'{}\n{}\n\n'.format(temp[-(i-1)]['title'], temp[-(i-1)]['url'])
 	bot.reply_to(message,msg)
 
 
