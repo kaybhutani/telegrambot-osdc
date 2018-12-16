@@ -198,7 +198,8 @@ def at_converter(message):
 
 @bot.message_handler(func=lambda msg: profanity.contains_profanity(msg.text) )
 def at_converter(message):
-	bot.reply_to(message, "{}\n Please mind your language.".format(profanity.censor(message.text)))
+	try:
+		bot.reply_to(message, "{}\n Please mind your language.".format(profanity.censor(message.text)))
 
 bot.polling(none_stop=True)
 
