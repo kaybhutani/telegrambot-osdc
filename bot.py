@@ -10,12 +10,11 @@ try:
 except:
 	print(e)
 
-bot_token='633214880:AAFT1IE1JJzPSZUSRBpOWHOQiOJmhC-kCZ0'
+bot_token='783770512:AAFAxVSBX2bPxphcltTOLVBmBbAanO-zo_o'
 
 bot = telebot.TeleBot(token=config.bot_token)
 
-
-
+admins=['kartikaybhutani', 'homuncculus', 'ryzokuken','dark_harryM']
 def getRECORD(dbname):
     records = dbname.find({})
     return records
@@ -23,7 +22,14 @@ def getRECORD(dbname):
 def pushRECORD(dbname, record):
     dbname.insert_one(record)
 
+def getone(dbname, userid):
+    data = dbname.find_one({"userid":userid})
+    return data
 
+def updateRecord(dbname, rec, update):
+    dbname.update_one({'userid': rec['userid']},{
+                              '$set': update
+                              }, upsert=False)
 
 @bot.message_handler(commands=['start']) # welcome message handler
 def send_welcome(message):
@@ -44,7 +50,6 @@ def send_welcome(message):
 
 @bot.message_handler(func=lambda msg: msg.text is not None and 'addevent' in msg.text.lower())
 def at_converter(message):
-	admins=['kartikaybhutani', 'homuncculus', 'ryzokuken','dark_harryM']
 	if message.from_user.username in admins:
 		try:
 			texts = message.text.split('\n')
@@ -102,7 +107,6 @@ def send_welcome(message):
 
 @bot.message_handler(func=lambda msg: msg.text is not None and 'addarticle' in msg.text.lower())
 def at_converter(message):
-	admins=['kartikaybhutani']
 	if message.from_user.username in admins:
 		try:
 			texts = message.text.split('\n')
@@ -154,7 +158,42 @@ def send_welcome(message):
 
 
 
+@bot.message_handler(func=lambda msg: msg.text is not None and '#spam' in msg.text.lower())
+def at_converter(message):
+	if message.from_user.username in admins:
+		try:
+			userid=message.reply_to_message.from_user.id
+			db = client.get_database("jiitosdc")
+			spams=db.spams
+			data=getone(spams, userid)
+			if data==None:
+				rec={
+				"userid":userid,
+				"count":1
+				}
+				pushRECORD(spams, rec)
+				bot.send_message(message.chat.id, 'Warned @{}, Warning count = 1'.format(message.reply_to_message.from_user.username))
 
+			elif data['count']>=5:
+				try:
+					bot.send_message(message.chat.id, 'You have reached max limit of warnings! Removing you for now.\nMessage admins if you think this was a mistake.')
+					bot.kick_chat_member(message.chat.id,data['userid'])
+				except:
+					bot.reply_to(message, 'Some Error occured, User might be admin.')
+			elif data!=None and data['count']<5:
+				rec=data
+				rec['count']+=1
+				updateRecord(spams, data, rec)
+				bot.send_message(message.chat.id , 'Warned @{}, Warning count = {}'.format(message.reply_to_message.from_user.username, data['count']))				
+			try:
+				bot.delete_message(message.chat.id, message.reply_to_message.message_id)
+			except:
+				None
+		except Exception as e:
+			bot.reply_to(message, 'Some error occured. Report to @kartikaybhutani ?')
+			print(e)
+	else:
+		bot.reply_to(message, 'Sorry, You don\'t have admin rights')
 
 bot.polling(none_stop=True)
 
