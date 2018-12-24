@@ -14,7 +14,7 @@ except:
 
 
 bot = telebot.TeleBot(token=config.bot_token)
-
+wish="Merry Christmas all!"
 admins=['kartikaybhutani', 'homuncculus', 'ryzokuken','dark_harryM']
 def getRECORD(dbname):
     records = dbname.find({})
@@ -202,6 +202,14 @@ def at_converter(message):
 		bot.reply_to(message, "{}\n Please mind your language.".format(profanity.censor(message.text)))
 	except:
 		None
+
+@bot.message_handler(func=lambda msg:msg.text is not None and '#wish' in msg.text.lower() )
+def at_converter(message):
+	try:
+		bot.send_message(message.chat.id , wish)
+	except:
+		None
+
 
 
 bot.polling(none_stop=True)
