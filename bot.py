@@ -5,6 +5,9 @@ from pymongo import MongoClient
 import config
 from profanity import profanity
 
+
+print("\n\n\n********BOT ONLINE**********\n\n\n")
+
 try:
 	client = MongoClient(config.MONGODB_URI, connectTimeoutMS=30000)
 
@@ -213,12 +216,20 @@ def at_converter(message):
 @bot.message_handler(func=lambda msg:msg.text is not None and '#offtopic' in msg.text.lower())
 def offtopic(message):
 	try:
-		to_chat_id=123444
+		to_chat_id='-289301454'
 		from_chat_id=message.chat.id
-		message_id=message.id
-		#bot.forward_message(to_chat_id, from_chat_id, message_id)
-		print(from_chat_id,'HEY',message_id,'BLAH')
-		bot.reply_to(message, "Moved topic to Off-Topic Group! Please continue the rest there.")
+		message_id=message.reply_to_message.message_id
+		bot.forward_message(to_chat_id, from_chat_id, message_id)
+		#print(from_chat_id,'HEY',message_id,'BLAH')
+		bot.reply_to(message, "Moved topic to <a href=\"https://t.me/joinchat/F5h-ahE-Y85bekqcasER4A\">Off-Topic Group</a>! Please continue the rest there.", parse_mode='HTML')
+	except Exception as e:
+		print(e)
+
+
+@bot.message_handler(func=lambda msg:msg.text is not None and '#check' in msg.text.lower() )
+def check(message):
+	try:
+		bot.send_message(message.chat.id , "<a href=\"https://www.youtube.com\">Hey</a>",parse_mode='HTML')
 	except:
 		None
 
