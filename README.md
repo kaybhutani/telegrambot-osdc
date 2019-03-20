@@ -1,5 +1,5 @@
 # telegrambot-osdc
-OSDC telegram bot manager for managing Upcoming meetings and Top 10 articles, Spam profanity and offtopic detection
+OSDC telegram bot manager for managing Upcoming meetings and Top 10 articles, Spam profanity, and offtopic detection
 
 Commands list
 <ul>
