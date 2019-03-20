@@ -232,6 +232,17 @@ def check(message):
 		bot.send_message(message.chat.id , "<a href=\"https://www.youtube.com\">Hey</a>",parse_mode='HTML')
 	except:
 		None
+@bot.message_handler(content_types=['new_chat_members'])
+def welcome(m):
+	user = bot.get_chat_member(m.chat.id, m.new_chat_member.id).user
+	try:
+		if user.is_bot:
+			bot.kick_chat_member(m.chat.id, m.new_chat_member.id)
+		if (m.new_chat_member.username != None and m.new_chat_member.first_name != None):
+			bot.send_message(m.chat.id, "Welcome to OSDC @{}".format(m.new_chat_member.username))
+			
+	except Exception as e:
+		print(e)
 
 
 bot.polling(none_stop=True)
